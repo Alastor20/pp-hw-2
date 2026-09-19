@@ -57,6 +57,9 @@ double area(double r, size_t threads, size_t tests)
 
     int err = pthread_create(&pthreads[i], nullptr, multiThreader, &structs[i]);
     if (err) {
+      for (size_t j = 0; j < i; j++) {
+        pthread_join(pthreads[j], nullptr);
+      }
       std::cerr << "pthread_create error: " << std::strerror(err) << '\n';
       std::terminate();
     }
