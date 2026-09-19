@@ -1,8 +1,10 @@
-#include <cstddef>
 #include <cstring>
 #include <exception>
 #include <iostream>
+#include <pthread.h>
 #include <random>
+#include <stdexcept>
+#include <vector>
 
 struct MultiThreadStruct
 {
@@ -74,10 +76,9 @@ double area(double r, size_t threads, size_t tests)
 
 int main()
 {
-  constexpr size_t threads = 16;
   double r = 0;
-  size_t tests = 0;
-  std::cin >> r >> tests;
+  size_t tests = 0, threads = 0;
+  std::cin >> r >> tests >> threads;
   try {
     std::cout << area(r, threads, tests) << '\n';
   } catch (const std::exception &e) {
