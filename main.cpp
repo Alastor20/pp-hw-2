@@ -41,12 +41,13 @@ void *multiThreader(void *data)
 
 double area(double r, size_t threads, size_t tests)
 {
-  if (r <= 0 || !threads || !tests || tests < threads) {
+  if (r <= 0 || !threads || !tests) {
     throw std::invalid_argument("Invalid input data");
   }
   std::vector< pthread_t > pthreads(threads);
   std::vector< MultiThreadStruct > structs;
   structs.reserve(threads);
+  threads = std::min(threads, tests);
   size_t testPerThread = tests / threads;
   size_t tail = tests % threads;
 
@@ -56,7 +57,7 @@ double area(double r, size_t threads, size_t tests)
 
     int err = pthread_create(&pthreads[i], nullptr, multiThreader, &structs[i]);
     if (err) {
-      std::cerr << "pthread_create error: " << strerror(err) << '\n';
+      std::cerr << "pthread_create error: " << std::strerror(err) << '\n';
       std::terminate();
     }
   }
@@ -64,7 +65,7 @@ double area(double r, size_t threads, size_t tests)
   for (pthread_t &thread : pthreads) {
     err = pthread_join(thread, nullptr);
     if (err) {
-      std::cerr << "pthread_join error: " << strerror(err) << '\n';
+      std::cerr << "pthread_join error: " << std::strerror(err) << '\n';
       std::terminate();
     }
   }
@@ -79,7 +80,10 @@ int main()
 {
   double r = 0;
   size_t tests = 0, threads = 0;
-  std::cin >> r >> tests >> threads;
+  if (!(std::cin >> r >> tests >> threads)) {
+    std::cerr << "Invalid input\n";
+    return 1;
+  }
   try {
     std::cout << area(r, threads, tests) << '\n';
   } catch (const std::exception &e) {
