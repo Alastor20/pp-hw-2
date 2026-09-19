@@ -21,7 +21,9 @@ size_t calc(double r, size_t tests, size_t seed)
   std::uniform_real_distribution< double > dist(0, 2 * r);
   size_t result = 0;
   for (size_t i = 0; i < tests; ++i) {
-    if (isInside(dist(gen), dist(gen), r)) {
+    double x = dist(gen);
+    double y = dist(gen);
+    if (isInside(x, y, r)) {
       ++result;
     }
   }
