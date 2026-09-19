@@ -71,4 +71,15 @@ double area(double r, size_t threads, size_t tests)
 }
 
 int main()
-{}
+{
+  constexpr size_t threads = 16;
+  double r = 0;
+  size_t tests = 0;
+  std::cin >> r >> tests;
+  try {
+    std::cout << area(r, threads, tests) << '\n';
+  } catch (const std::exception &e) {
+    std::cerr << e.what() << '\n';
+    return 1;
+  }
+}
