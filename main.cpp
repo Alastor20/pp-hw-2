@@ -41,7 +41,7 @@ void *multiThreader(void *data)
 
 double area(double r, size_t threads, size_t tests)
 {
-  if (r <= 0 || !threads || !tests) {
+  if (r <= 0 || !threads || !tests || tests < threads) {
     throw std::invalid_argument("Invalid input data");
   }
   std::vector< pthread_t > pthreads(threads);
