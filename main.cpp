@@ -9,7 +9,7 @@
 struct MultiThreadStruct
 {
   double r;
-  size_t tests, seed;
+  size_t tests, seed, result = 0;
 };
 
 bool isInside(double x, double y, double r)
@@ -35,8 +35,8 @@ size_t calc(double r, size_t tests, size_t seed)
 void *multiThreader(void *data)
 {
   MultiThreadStruct *task = static_cast< MultiThreadStruct * >(data);
-  size_t result = calc(task->r, task->tests, task->seed);
-  return reinterpret_cast< void * >(result);
+  task->result = calc(task->r, task->tests, task->seed);
+  return nullptr;
 }
 
 double area(double r, size_t threads, size_t tests)
@@ -61,15 +61,16 @@ double area(double r, size_t threads, size_t tests)
     }
   }
   int err = 0;
-  size_t result[1] = {};
-  size_t hits = 0;
-  for (auto &thread : pthreads) {
-    err = pthread_join(thread, reinterpret_cast< void ** >(&result));
+  for (pthread_t &thread : pthreads) {
+    err = pthread_join(thread, nullptr);
     if (err) {
       std::cerr << "pthread_join error: " << strerror(err) << '\n';
       std::terminate();
     }
-    hits += *result;
+  }
+  size_t hits = 0;
+  for (MultiThreadStruct &res : structs) {
+    hits += res.result;
   }
   return 4 * r * r * hits / tests;
 }
